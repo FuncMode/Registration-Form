@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../config/db'); // Make sure this points to your DB connection
+const pool = require('../config/db');
 
 // ✅ Check Admin Password
 router.post('/check-admin-password', (req, res) => {
