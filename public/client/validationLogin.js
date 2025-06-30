@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (res.ok) {
             showToast("✅ Login successful! Redirecting...");
             setTimeout(() => {
-                window.location.href = '';
+                window.location.href = 'dashboard.html';
             }, 2000);
         } else {
             showToast(`❌ ${data.message}`, true);
