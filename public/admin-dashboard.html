@@ -10,11 +10,11 @@
 
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>👑 Admin Dashboard</h1>
+        <h1>Admin Dashboard</h1>
             <div>
                 <a href="index.html" class="btn btn-secondary me-2">← Back to Register</a>
                 <button class="btn btn-outline-danger me-2" onclick="logout()">Logout</button>
-                <button class="btn btn-dark" onclick="toggleDarkMode()">🌓 Dark Mode</button>
+                <button class="btn btn-dark" onclick="toggleDarkMode()">Dark Mode</button>
             </div>
     </div>
 
@@ -36,11 +36,15 @@
 
 <script>
 window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('darkMode') === 'true') {
-        enableDarkMode();
-    }
+    const darkModeEnabled = localStorage.getItem('darkMode') === 'true';
+        if (darkModeEnabled) {
+            enableDarkMode();
+            const btn = document.querySelector('button.btn-dark');
+            if (btn) btn.textContent = 'Light Mode';
+        }
     fetchUsers();
 });
+
 
     function toggleDarkMode() {
         const isDark = document.body.classList.toggle('bg-dark');
@@ -52,6 +56,9 @@ window.addEventListener('DOMContentLoaded', () => {
         });
 
         localStorage.setItem('darkMode', isDark);
+
+        const btn = document.querySelector('button.btn-dark');
+        if (btn) btn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
     }
 
     function enableDarkMode() {

@@ -3,72 +3,14 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
-// REGISTER
-const register = async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: 'All fields are required' });
-  }
-
-  try {
-    const [existingUser] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    if (existingUser.length > 0) {
-      return res.status(409).json({ message: 'Email already registered' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Check total number of users to decide if this is the first one
-    const [users] = await pool.query('SELECT COUNT(*) AS total FROM users');
-    const role = users[0].total === 0 ? 'admin' : 'user';
-
-    // Insert user with role
-    const [result] = await pool.query(
-      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
-      [name, email, hashedPassword, role]
-    );
-
-    res.status(201).json({ message: 'User registered', userId: result.insertId, role });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
-
-// LOGIN
-const login = async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ message: 'All fields are required' });
-  }
-
-  try {
-    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
-    const user = rows[0];
-
-    if (!user) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid email or password' });
-    }
-
-    res.status(200).json({ message: 'Login successful', userId: user.id });
-  } catch (err) {
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
-};
-
-// Transporter (Gmail)
+// Nodemailer setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
+    pass: process.env.EMAIL_PASS,
+  },
 });
-
 
 // ✅ Forgot Password
 const forgotPassword = async (req, res) => {
@@ -86,7 +28,7 @@ const forgotPassword = async (req, res) => {
     await pool.query('UPDATE users SET reset_token = ?, reset_expires = ? WHERE email = ?', [
       token,
       expires,
-      email
+      email,
     ]);
 
     const resetUrl = `${process.env.BASE_URL}/reset-password.html?token=${token}`;
@@ -94,7 +36,7 @@ const forgotPassword = async (req, res) => {
       from: `"Support" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: 'Password Reset',
-      html: `<p>You requested a password reset.</p><p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`
+      html: `<p>You requested a password reset.</p><p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`,
     });
 
     res.json({ message: 'Reset link sent to your email.' });
@@ -103,7 +45,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-// ✅ Handle new password
+// ✅ Reset Password
 const resetPassword = async (req, res) => {
   const { token, password } = req.body;
   if (!token || !password) return res.status(400).json({ message: 'Token and password required' });
@@ -129,5 +71,59 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// ✅ Register
+const register = async (req, res) => {
+  const { name, email, password } = req.body;
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
 
-module.exports = { register, login, forgotPassword, resetPassword };
+  try {
+    const [existingUser] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    if (existingUser.length > 0) {
+      return res.status(409).json({ message: 'Email already registered' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const [countResult] = await pool.query('SELECT COUNT(*) AS total FROM users');
+    const role = countResult[0].total === 0 ? 'admin' : 'user';
+
+    const [result] = await pool.query(
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      [name, email, hashedPassword, role]
+    );
+
+    res.status(201).json({ message: 'User registered', userId: result.insertId, role });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+// ✅ Login
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  try {
+    const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+    const user = rows[0];
+    if (!user) return res.status(401).json({ message: 'Invalid credentials' });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(401).json({ message: 'Invalid credentials' });
+
+    res.status(200).json({ message: 'Login successful', userId: user.id });
+  } catch (err) {
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+module.exports = {
+  register, // your existing register function
+  login,    // your existing login function
+  forgotPassword,
+  resetPassword
+};
