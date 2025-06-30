@@ -1,7 +1,7 @@
 {
   "name": "registrationform",
   "version": "1.0.0",
-"description": "registration form using Express and MySQL",
+  "description": "registration form using Express and MySQL",
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
@@ -10,12 +10,25 @@
   },
   "author": "Angelito Tallod <angelitotallod1234@gmail.com>",
   "license": "ISC",
-  "keywords": ["html", "css", "js", "nodejs", "express", "sql", "mysql", "registration", "form", "auth"],
+  "keywords": [
+    "html",
+    "css",
+    "js",
+    "nodejs",
+    "express",
+    "sql",
+    "mysql",
+    "registration",
+    "form",
+    "auth"
+  ],
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "crypto": "^1.0.1",
     "dotenv": "^17.0.0",
     "express": "^5.1.0",
-    "mysql2": "^3.14.1"
+    "mysql2": "^3.14.1",
+    "nodemailer": "^7.0.4"
   },
   "devDependencies": {
     "nodemon": "^3.0.0"
