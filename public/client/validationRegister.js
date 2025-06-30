@@ -1,65 +1,49 @@
+
 (() => {
+    // helper function
 const selector = (tag) => document.querySelector(tag);
 const eventListener = (tag, action, callback) => selector(tag).addEventListener(action, callback);
 
-const registerForm = selector('#registerForm');
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = selector('#loginForm');
 
-eventListener('#registerForm', 'submit', async (e) => {
-    e.preventDefault();
+    if (!loginForm) return;
 
-    const name = registerForm.name.value.trim();
-    const email = registerForm.email.value.trim();
-    const password = registerForm.password.value.trim();
+    eventListener('#loginForm', 'submit', async (e) => {
+        e.preventDefault();
 
-    const nameRegex = /^[A-Za-z\s]+$/;
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+        const email = loginForm.email.value.trim();
+        const password = loginForm.password.value;
 
-    if (!name || !email || !password) {
-        showToast('❌ All fields are required.', true);
-        return;
-    }
+        if (!email || !password) {
+            showToast("⚠️ All fields are required", true);
+            return;
+        }
 
-    if (!nameRegex.test(name)) {
-        showToast('❌ Name should only contain letters and spaces.', true);
-        return;
-    }
-
-    if (!passwordRegex.test(password)) {
-        showToast('❌ Password must be at least 8 characters and include at least 1 letter & 1 number.', true);
-        return;
-    }
-
-    try {
-        const res = await fetch('/register', {
+        try {
+        const res = await fetch('/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, email, password })
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
         });
 
         const data = await res.json();
 
         if (res.ok) {
-            showToast("✅ Registration successful!");
-            clear();
+            showToast("✅ Login successful! Redirecting...");
             setTimeout(() => {
-                toggleForms(); //switch to login form
+                window.location.href = 'dashboard.html';
             }, 2000);
         } else {
-            showToast(data.message || 'Registration failed.', true);
-            clear();
+            showToast(`❌ ${data.message}`, true);
         }
 
-    } catch (err) {
-        console.error(err);
-        showToast('❌ Something went wrong.', true);
-        clear();
-    }
+        } catch (err) {
+            console.error(err);
+            showToast("❌ Server error", true);
+        }
+    });
 });
-
-function clear() {
-    registerForm.name.value = '';
-    registerForm.email.value = '';
-    registerForm.password.value = '';
-}
-
 })();
