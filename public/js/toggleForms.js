@@ -1,6 +1,5 @@
 // switch form
-(() => {
-    function toggleForms() {
+function toggleForms() {
     const registerForm = document.getElementById('registerForm');
     const loginForm = document.getElementById('loginForm');
 
@@ -9,5 +8,4 @@
         loginForm.classList.toggle('hidden');
     }
 }
-    toggleForms();
-})();
+
