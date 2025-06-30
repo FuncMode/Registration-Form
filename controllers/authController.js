@@ -17,12 +17,18 @@ const register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Check total number of users to decide if this is the first one
+    const [users] = await pool.query('SELECT COUNT(*) AS total FROM users');
+    const role = users[0].total === 0 ? 'admin' : 'user';
+
+    // Insert user with role
     const [result] = await pool.query(
-      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-      [name, email, hashedPassword]
+      'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+      [name, email, hashedPassword, role]
     );
 
-    res.status(201).json({ message: 'User registered', userId: result.insertId });
+    res.status(201).json({ message: 'User registered', userId: result.insertId, role });
   } catch (err) {
     res.status(500).json({ message: 'Server error', error: err.message });
   }

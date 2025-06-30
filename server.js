@@ -4,6 +4,7 @@ const path = require('path');
 require('dotenv').config();
 
 const authRoutes = require('./routes/authRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use(authRoutes);
+app.use(adminRoutes);
 
 // Server
 const PORT = process.env.PORT || 3000;
