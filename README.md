@@ -1,6 +1,6 @@
 # 📝 Registration Form (Node.js + MySQL)
 
-user registration form project using **Node.js**, **Express**, **MySQL**, at **vanilla HTML/Bootstrap**.
+user registration form project using **Node.js**, **Express**, **MySQL**, at **vanilla Js, HTML/Bootstrap**.
 
 ## 📁 Project Structure (Paliwanag ng bawat folder/file)
 
