@@ -1,49 +1,37 @@
-
 (() => {
-    // helper function
-const selector = (tag) => document.querySelector(tag);
-const eventListener = (tag, action, callback) => selector(tag).addEventListener(action, callback);
+  const loginForm = document.querySelector('#loginForm');
+  if (!loginForm) return;
 
-document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = selector('#loginForm');
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-    if (!loginForm) return;
+    const email = loginForm.email.value.trim();
+    const password = loginForm.password.value;
 
-    eventListener('#loginForm', 'submit', async (e) => {
-        e.preventDefault();
+    if (!email || !password) {
+      alert("⚠️ All fields are required");
+      return;
+    }
 
-        const email = loginForm.email.value.trim();
-        const password = loginForm.password.value;
+    try {
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-        if (!email || !password) {
-            showToast("⚠️ All fields are required", true);
-            return;
-        }
+      const data = await res.json();
 
-        try {
-        const res = await fetch('/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email, password })
-        });
+      if (res.ok) {
+        alert("✅ Login successful!");
+        window.location.href = 'dashboard.html';
+      } else {
+        alert("❌ " + data.message);
+      }
 
-        const data = await res.json();
-
-        if (res.ok) {
-            showToast("✅ Login successful! Redirecting...");
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 2000);
-        } else {
-            showToast(`❌ ${data.message}`, true);
-        }
-
-        } catch (err) {
-            console.error(err);
-            showToast("❌ Server error", true);
-        }
-    });
-});
+    } catch (err) {
+      console.error(err);
+      alert("❌ Server error");
+    }
+  });
 })();

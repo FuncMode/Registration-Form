@@ -11,7 +11,7 @@ const createUser = async (name, email, hashedPassword) => {
 const findUserByEmail = async (email) => {
   const sql = 'SELECT * FROM users WHERE email = ?';
     const [rows] = await pool.query(sql, [email]);
-  return rows[0]; // undefined if not found
+  return rows[0];
 };
 
 module.exports = {

@@ -1,192 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
 </head>
-    <body class="bg-light">
+<body class="bg-light">
 
-    <div class="form-container">
-        <!-- ✅ Register Form -->
-        <form id="registerForm" action="/register" method="POST">
-            <h3 class="text-center mb-3">Register</h3>
+<div class="form-container">
+  <!-- Register Form -->
+  <form id="registerForm">
+    <h3 class="text-center mb-3">Register</h3>
 
-            <div class="mb-3">
-                <label for="name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" name="name" required />
-            </div>
-
-            <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" name="email" required />
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" name="password" id="registerPassword" required />
-                    <span class="input-group-text">
-                    <i class="bi bi-eye-slash toggle-password" data-target="registerPassword" style="cursor:pointer;"></i>
-                    </span>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100">Register</button>
-            <p class="mt-3 text-center">
-                Already have an account? <span class="toggle-link" onclick="toggleForms()">Login here</span>
-            </p>
-        </form>
-
-        <!-- ✅ Login Form -->
-        <form id="loginForm" method="POST" class="hidden">
-            <h3 class="text-center mb-3">Login</h3>
-            
-            <div class="mb-3">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" name="email" required />
-            </div>
-
-            <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-                <div class="input-group">
-                    <input type="password" class="form-control" name="password" id="loginPassword" required />
-                    <span class="input-group-text">
-                    <i class="bi bi-eye-slash toggle-password" data-target="loginPassword" style="cursor:pointer;"></i>
-                    </span>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-success w-100">Login</button>
-            <p class="mt-3 text-center">
-                Don't have an account? <span class="toggle-link" onclick="toggleForms()">Register here</span>
-            </p>
-            <p class="text-center mt-2">
-                <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
-            </p>
-        </form>
+    <div class="mb-3">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-control" name="name" required />
     </div>
 
-    <!-- ✅ Toast Container -->
+    <div class="mb-3">
+      <label class="form-label">Email address</label>
+      <input type="email" class="form-control" name="email" required />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <div class="input-group">
+        <input type="password" class="form-control" name="password" id="registerPassword" required />
+        <span class="input-group-text">
+          <i class="bi bi-eye-slash toggle-password" data-target="registerPassword" style="cursor:pointer;"></i>
+        </span>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Register</button>
+    <p class="mt-3 text-center">
+      Already have an account? <span class="toggle-link" onclick="toggleForms()">Login here</span>
+    </p>
+  </form>
+
+  <!-- Login Form -->
+  <form id="loginForm" class="hidden">
+    <h3 class="text-center mb-3">Login</h3>
+
+    <div class="mb-3">
+      <label class="form-label">Email address</label>
+      <input type="email" class="form-control" name="email" required />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <div class="input-group">
+        <input type="password" class="form-control" name="password" id="loginPassword" required />
+        <span class="input-group-text">
+          <i class="bi bi-eye-slash toggle-password" data-target="loginPassword" style="cursor:pointer;"></i>
+        </span>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-success w-100">Login</button>
+    <p class="mt-3 text-center">
+      Don't have an account? <span class="toggle-link" onclick="toggleForms()">Register here</span>
+    </p>
+    <p class="text-center mt-2">
+      <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
+    </p>
+  </form>
+</div>
+
+<!-- Toast -->
 <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999">
-    <div id="toastMessage" class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-        <div class="toast-body">
-            Success! Redirecting...
-        </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
+  <div id="toastMessage" class="toast align-items-center text-white bg-success border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body">Success! Redirecting...</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
     </div>
+  </div>
 </div>
 
-<!-- ✅ Forgot Password Modal -->
-<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <form class="modal-content" id="forgotPasswordForm">
-            <div class="modal-header">
-                <h5 class="modal-title" id="forgotPasswordLabel">Forgot Password</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <label for="forgotEmail" class="form-label">Enter your email address:</label>
-                <input type="email" class="form-control" id="forgotEmail" required />
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">Send Reset Link</button>
-            </div>
-        </form>
-    </div>
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+  <div class="modal-dialog">
+    <form class="modal-content" id="forgotPasswordForm">
+      <div class="modal-header">
+        <h5 class="modal-title">Forgot Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <label class="form-label">Enter your email:</label>
+        <input type="email" class="form-control" id="forgotEmail" required />
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Send Reset Link</button>
+      </div>
+    </form>
+  </div>
 </div>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/toggleForms.js"></script>
-    <script src="client/validationRegister.js"></script>
-    <script src="client/validationLogin.js"></script>
-
-
-    <!-- main script of register and login and forget password-->
-    <script>
-
-function showToast(msg, isError = false) {
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  function showToast(msg, isError = false) {
     const toastEl = document.getElementById('toastMessage');
     const toastBody = toastEl.querySelector('.toast-body');
 
     toastBody.textContent = msg;
-
-  // Change toast background color based on success/error
     toastEl.classList.remove('bg-success', 'bg-danger');
     toastEl.classList.add(isError ? 'bg-danger' : 'bg-success');
 
     const toast = new bootstrap.Toast(toastEl);
     toast.show();
-}
+  }
 
+  function toggleForms() {
+    document.getElementById('registerForm').classList.toggle('hidden');
+    document.getElementById('loginForm').classList.toggle('hidden');
+  }
 
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.toggle-password').forEach(icon => {
-        icon.addEventListener('click', () => {
-            const targetId = icon.getAttribute('data-target');
-            const input = document.getElementById(targetId);
+      icon.addEventListener('click', () => {
+        const targetId = icon.getAttribute('data-target');
+        const input = document.getElementById(targetId);
 
-            if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('bi-eye-slash');
-                    icon.classList.add('bi-eye');
-            } else {
-                    input.type = 'password';
-                    icon.classList.remove('bi-eye');
-                    icon.classList.add('bi-eye-slash');
-            }
-        });
+        input.type = input.type === 'password' ? 'text' : 'password';
+        icon.classList.toggle('bi-eye-slash');
+        icon.classList.toggle('bi-eye');
+      });
     });
-});
 
-// forget password
-document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('forgotEmail').value.trim();
+    // Register Form
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const password = form.password.value;
 
-    if (!email) {
-        showToast('❌ Please enter your email.', true);
+      if (!name || !email || !password) {
+        showToast("⚠️ All fields are required", true);
         return;
-    }
+      }
 
-    try {
-        const res = await fetch('/forgot-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
+      try {
+        const res = await fetch('/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
         });
 
         const data = await res.json();
 
         if (res.ok) {
-            showToast(data.message || 'Reset link sent!');
-            document.getElementById('forgotEmail').value = '';
-
-            const modalEl = document.getElementById('forgotPasswordModal');
-            const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            modalInstance.hide();
-
-            setTimeout(() => {
-                if (document.activeElement && modalEl.contains(document.activeElement)) {
-                    document.activeElement.blur();
-                }
-            }, 300);
-
+          showToast("✅ Registered! You can now login.");
+          toggleForms();
         } else {
-            showToast(data.message || 'Failed to process request.', true);
+          showToast(`❌ ${data.message}`, true);
         }
-    } catch (err) {
+      } catch (err) {
         console.error(err);
-        showToast('❌ Something went wrong.', true);
-    }
-});
+        showToast("❌ Server error", true);
+      }
+    });
 
-    </script>
+    // Login Form
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const email = form.email.value.trim();
+      const password = form.password.value;
+
+      if (!email || !password) {
+        showToast("⚠️ All fields are required", true);
+        return;
+      }
+
+      try {
+        const res = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast("✅ Login successful! Redirecting...");
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 1500);
+        } else {
+          showToast(`❌ ${data.message}`, true);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("❌ Server error", true);
+      }
+    });
+
+    // Forgot Password
+    document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('forgotEmail').value.trim();
+
+      if (!email) {
+        showToast("⚠️ Please enter your email", true);
+        return;
+      }
+
+      try {
+        const res = await fetch('/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          showToast(data.message || "✅ Reset link sent!");
+          bootstrap.Modal.getInstance(document.getElementById('forgotPasswordModal')).hide();
+        } else {
+          showToast(`❌ ${data.message}`, true);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast("❌ Server error", true);
+      }
+    });
+  });
+</script>
 </body>
 </html>
