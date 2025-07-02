@@ -3,22 +3,39 @@ const router = express.Router();
 const pool = require('../config/db');
 require('dotenv').config();
 
-// ✅ Check Admin Password
+
+// Check session
+router.get('/check-session', (req, res) => {
+  console.log('Session:', req.session.user);
+  if (!req.session.user) return res.json({ loggedIn: false });
+  res.json({ loggedIn: true, role: req.session.user.role });
+});
+
+// Admin password check
 router.post('/check-admin-password', (req, res) => {
   const { password } = req.body;
+
+  if (!req.session.user) {
+    return res.status(401).json({ success: false, message: 'You must log in first' });
+  }
+
+  if (req.session.user.role !== 'admin') {
+    return res.status(403).json({ success: false, message: 'Access denied: Admins only' });
+  }
 
   if (!password) {
     return res.status(400).json({ success: false, message: 'Password is required' });
   }
 
-  if (password === process.env.ADMIN_PASSWORD) {
-    return res.json({ success: true });
-  } else {
-    return res.status(401).json({ success: false, message: 'Incorrect password' });
+  if (password !== process.env.ADMIN_PASSWORD) {
+    return res.status(401).json({ success: false, message: 'Incorrect admin password' });
   }
+
+  // Success
+  return res.json({ success: true });
 });
 
-// ✅ Fetch all users (for admin dashboard)
+// Fetch all users (for admin dashboard)
 router.get('/admin/users', async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT id, name, email, role FROM users');
@@ -28,7 +45,7 @@ router.get('/admin/users', async (req, res) => {
   }
 });
 
-// ✅ Delete user
+// Delete user
 router.delete('/admin/users/:id', async (req, res) => {
   const { id } = req.params;
   try {
@@ -42,7 +59,7 @@ router.delete('/admin/users/:id', async (req, res) => {
   }
 });
 
-// ✅ Update user
+// Update user
 router.put('/admin/users/:id', async (req, res) => {
   const { id } = req.params;
   const { name, role } = req.body;
