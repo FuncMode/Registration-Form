@@ -37,7 +37,7 @@ app.get('/admin-dashboard.html', isAuthenticated, (req, res) => {
   }
 });
 
-// User dashboard
+// User dashboard`
 app.get('/dashboard.html', isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
 });
