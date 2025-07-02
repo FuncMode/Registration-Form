@@ -9,49 +9,55 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false
 }));
 
-// Serve static files from /public
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Route middleware
+// Routes
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 app.use(authRoutes);
 app.use(adminRoutes);
 
-// Session check middleware
+// Auth middleware
 function isAuthenticated(req, res, next) {
   if (req.session.user) return next();
   return res.status(403).send('Forbidden: Please login first');
 }
 
-// Serve dashboard.html from /views
+// Admin dashboard route
+app.get('/admin-dashboard.html', isAuthenticated, (req, res) => {
+  if (req.session.user.role === 'admin') {
+    res.sendFile(path.join(__dirname, 'views', 'admin-dashboard.html'));
+  } else {
+    res.status(403).send('Access denied: Admins only');
+  }
+});
+
+// User dashboard
 app.get('/dashboard.html', isAuthenticated, (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'dashboard.html'));
 });
 
-// Serve admin-dashboard.html from /views
-app.get('/admin-dashboard.html', isAuthenticated, (req, res) => {
-  if (req.session.user?.role === 'admin') {
-    res.sendFile(path.join(__dirname, 'views', 'admin-dashboard.html'));
-  } else {
-    res.status(403).send('Forbidden: Admins only');
-  }
-});
-
-// Default index route
+// Home
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-// Fallback 404
+// Logout
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => res.redirect('/'));
+});
+
+// 404
 app.use((req, res) => {
   res.status(404).send('Page not found');
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`✅ Server running at http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`✅ Server running at http://localhost:${PORT}`);
+});
