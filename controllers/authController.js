@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
+// gmail sender
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -12,6 +13,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+// forget password
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ message: 'Email is required' });
@@ -42,6 +44,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
+// reset password
 const resetPassword = async (req, res) => {
   const { token, password } = req.body;
   if (!token || !password) return res.status(400).json({ message: 'Token and password required' });
@@ -60,6 +63,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
+// register
 const register = async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) return res.status(400).json({ message: 'All fields are required' });
@@ -81,6 +85,7 @@ const register = async (req, res) => {
   }
 };
 
+// login
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ message: 'All fields are required' });
