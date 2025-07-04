@@ -32,7 +32,7 @@ const forgotPassword = async (req, res) => {
 
     const resetUrl = `${process.env.BASE_URL}/reset-password.html?token=${token}`;
     await transporter.sendMail({
-      from: `"Support" <${process.env.EMAIL_USER}>`,
+      from: `"Support" <Registration Form>`,
       to: email,
       subject: 'Password Reset',
       html: `<p>Click <a href="${resetUrl}">here</a> to reset your password.</p>`

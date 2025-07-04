@@ -33,7 +33,11 @@
       </table>
     </div>
   </div>
-
+    <div id="loading" class="position-absolute top-50 start-50 translate-middle" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
   <script>
     window.addEventListener('DOMContentLoaded', async () => {
       try {
@@ -83,8 +87,9 @@
         tbl.classList.add('table-dark');
       });
     }
-
+    const loading = document.getElementById('loading');
     async function fetchUsers() {
+      Promise.resolve().then(() => loading.style.display = 'block');
       try {
         const res = await fetch('/admin/users');
         const data = await res.json();
@@ -107,6 +112,8 @@
       } catch (err) {
         console.error('Error loading users:', err);
         alert('Failed to load users.');
+      } finally {
+        loading.style.display = 'none';
       }
     }
 
@@ -128,13 +135,14 @@
 
     function editUser(id, name, email, role) {
       const newName = prompt("Edit name:", name);
+      const newEmail = prompt('Edit email:', email);
       const newRole = prompt("Edit role (user/admin):", role);
-      if (!newName || !newRole) return;
+      if (!newName || !newRole || !newEmail) return;
 
       fetch(`/admin/users/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: newName, role: newRole })
+        body: JSON.stringify({ name: newName, email: newEmail, role: newRole })
       })
       .then(res => res.json())
       .then(data => {

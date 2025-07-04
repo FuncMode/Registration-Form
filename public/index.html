@@ -67,6 +67,11 @@
     <p class="text-center mt-2">
       <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot Password?</a>
     </p>
+      <div id="loading" class="position-absolute top-50 start-50 translate-middle" style="display: none;">
+        <div class="spinner-border text-dark" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
   </form>
 </div>
 
@@ -130,79 +135,107 @@
       });
     });
 
+    const loading = document.getElementById('loading');
+
     // Register Form
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const name = form.name.value.trim();
-      const email = form.email.value.trim();
-      const password = form.password.value;
+  document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const name = form.name.value.trim();
+  const email = form.email.value.trim();
+  const password = form.password.value;
 
-      if (!name || !email || !password) {
-        showToast("⚠️ All fields are required", true);
-        return;
-      }
+  loading.style.display = 'block';
 
-      try {
-        const res = await fetch('/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, password })
-        });
+  const nameRegex = /^[A-Za-z0-9\s]{2,15}$/;
+  if (!nameRegex.test(name)) {
+    showToast("⚠️ Name must be 2–15 letters only.", true);
+    loading.style.display = 'none'; // 💡 add this
+    return;
+  }
 
-        const data = await res.json();
+  const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  if (!emailRegex.test(email)) {
+    showToast("⚠️ Please enter a valid email.", true);
+    loading.style.display = 'none'; // 💡 add this
+    return;
+  }
 
-        if (res.ok) {
-          showToast("✅ Registered! You can now login.");
-          toggleForms();
-        } else {
-          showToast(`❌ ${data.message}`, true);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("❌ Server error", true);
-      }
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+  if (!passwordRegex.test(password)) {
+    showToast("⚠️ Password must be 8+ chars with letters and numbers.", true);
+    loading.style.display = 'none'; // 💡 add this
+    return;
+  }
+
+  try {
+    const res = await fetch('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
     });
 
+    const data = await res.json();
+
+    if (res.ok) {
+      showToast("✅ Registered! You can now login.");
+      toggleForms();
+    } else {
+      showToast(`❌ ${data.message}`, true);
+    }
+  } catch (err) {
+    console.error(err);
+    showToast("❌ Server error", true);
+  } finally {
+    loading.style.display = 'none'; // ✅ always hide
+  }
+});
     // Login Form
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const email = form.email.value.trim();
-      const password = form.password.value;
+  e.preventDefault();
+  const form = e.target;
+  const email = form.email.value.trim();
+  const password = form.password.value;
 
-      if (!email || !password) {
-        showToast("⚠️ All fields are required", true);
-        return;
-      }
+  loading.style.display = 'block';
 
-      try {
-        const res = await fetch('/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password })
-        });
+  if (!email || !password) {
+    showToast("⚠️ All fields are required", true);
+    loading.style.display = 'none'; // 💡 fix
+    return;
+  }
 
-        const data = await res.json();
-
-        if (res.ok) {
-          showToast("✅ Login successful! Redirecting...");
-          setTimeout(() => {
-            window.location.href = '/dashboard.html';
-          }, 1500);
-        } else {
-          showToast(`❌ ${data.message}`, true);
-        }
-      } catch (err) {
-        console.error(err);
-        showToast("❌ Server error", true);
-      }
+  try {
+    const res = await fetch('/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
     });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      showToast("✅ Login successful! Redirecting...");
+      setTimeout(() => {
+        window.location.href = '/dashboard.html';
+      }, 1500);
+    } else {
+      showToast(`❌ ${data.message}`, true);
+    }
+  } catch (err) {
+    console.error(err);
+    showToast("❌ Server error", true);
+  } finally {
+    loading.style.display = 'none'; // ✅ always hide loader
+  }
+});
 
     // Forgot Password
     document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const email = document.getElementById('forgotEmail').value.trim();
+
+      loading.style.display = 'block';
 
       if (!email) {
         showToast("⚠️ Please enter your email", true);
@@ -227,6 +260,8 @@
       } catch (err) {
         console.error(err);
         showToast("❌ Server error", true);
+      } finally {
+          loading.style.display = 'none';
       }
     });
   });

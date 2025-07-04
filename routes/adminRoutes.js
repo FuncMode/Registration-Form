@@ -62,14 +62,30 @@ router.delete('/admin/users/:id', async (req, res) => {
 // Update user
 router.put('/admin/users/:id', async (req, res) => {
   const { id } = req.params;
-  const { name, role } = req.body;
+  const { name, email, role } = req.body;
 
-  if (!name || !role) {
-    return res.status(400).json({ message: 'Missing name or role' });
+  const nameRegex = /^[A-Za-z0-9\s]{2,15}$/;
+  
+  if (!nameRegex.test(name)) {
+    return res.status(400).json({ message: '⚠️ Name must be 2–15 letters only' });
+  }
+
+  // Email validation: basic format check
+  const emailRegex = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  if (!emailRegex.test(email)) {
+    return res.status(400).json({ message: '⚠️ Please enter a valid email.' });
+  }
+
+  if(!role.includes('admin' || 'user')) {
+    return res.status(400).json({ message: 'type: admin/user' });
+  }
+
+  if (!name || !role || !nameRegex.test(name)) {
+    return res.status(400).json({ message: 'Missing name or email or role' });
   }
 
   try {
-    const [result] = await pool.query('UPDATE users SET name = ?, role = ? WHERE id = ?', [name, role, id]);
+    const [result] = await pool.query('UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?', [name, email, role, id]);
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'User not found' });
     }

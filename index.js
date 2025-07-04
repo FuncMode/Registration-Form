@@ -25,7 +25,7 @@ app.use(adminRoutes);
 // Auth middleware
 function isAuthenticated(req, res, next) {
   if (req.session.user) return next();
-  return res.status(403).send('Forbidden: Please login first');
+  return res.redirect('/');
 }
 
 // Admin dashboard route
@@ -54,7 +54,7 @@ app.get('/logout', (req, res) => {
 
 // 404
 app.use((req, res) => {
-  res.status(404).send('Page not found');
+  res.status(404).sendFile(path.join(__dirname, '404.html'));
 });
 
 const PORT = process.env.PORT || 3000;
